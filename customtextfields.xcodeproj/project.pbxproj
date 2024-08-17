@@ -12,8 +12,8 @@
 		4D736E992C40078D00CA5397 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D736E982C40078D00CA5397 /* ViewController.swift */; };
 		4D736E9E2C40078F00CA5397 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4D736E9D2C40078F00CA5397 /* Assets.xcassets */; };
 		4D736EA12C40078F00CA5397 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 4D736EA02C40078F00CA5397 /* Base */; };
-		4D736EA92C4007BF00CA5397 /* CustomTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D736EA82C4007BF00CA5397 /* CustomTextField.swift */; };
-		4D736EAD2C4008C200CA5397 /* CounterTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D736EAC2C4008C200CA5397 /* CounterTextField.swift */; };
+		4D736EA92C4007BF00CA5397 /* TextFieldWithoutDigits.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D736EA82C4007BF00CA5397 /* TextFieldWithoutDigits.swift */; };
+		4D736EAD2C4008C200CA5397 /* TextFieldWithCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D736EAC2C4008C200CA5397 /* TextFieldWithCounter.swift */; };
 		4D736EAF2C4008DF00CA5397 /* MaskedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D736EAE2C4008DF00CA5397 /* MaskedTextField.swift */; };
 		4D736EB12C4008FA00CA5397 /* LinkTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D736EB02C4008FA00CA5397 /* LinkTextField.swift */; };
 		4D736EB32C40091500CA5397 /* PasswordTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D736EB22C40091500CA5397 /* PasswordTextField.swift */; };
@@ -28,8 +28,8 @@
 		4D736E9D2C40078F00CA5397 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4D736EA02C40078F00CA5397 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4D736EA22C40078F00CA5397 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		4D736EA82C4007BF00CA5397 /* CustomTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextField.swift; sourceTree = "<group>"; };
-		4D736EAC2C4008C200CA5397 /* CounterTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterTextField.swift; sourceTree = "<group>"; };
+		4D736EA82C4007BF00CA5397 /* TextFieldWithoutDigits.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldWithoutDigits.swift; sourceTree = "<group>"; };
+		4D736EAC2C4008C200CA5397 /* TextFieldWithCounter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldWithCounter.swift; sourceTree = "<group>"; };
 		4D736EAE2C4008DF00CA5397 /* MaskedTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaskedTextField.swift; sourceTree = "<group>"; };
 		4D736EB02C4008FA00CA5397 /* LinkTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkTextField.swift; sourceTree = "<group>"; };
 		4D736EB22C40091500CA5397 /* PasswordTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordTextField.swift; sourceTree = "<group>"; };
@@ -80,8 +80,8 @@
 			isa = PBXGroup;
 			children = (
 				4D736E982C40078D00CA5397 /* ViewController.swift */,
-				4D736EA82C4007BF00CA5397 /* CustomTextField.swift */,
-				4D736EAC2C4008C200CA5397 /* CounterTextField.swift */,
+				4D736EA82C4007BF00CA5397 /* TextFieldWithoutDigits.swift */,
+				4D736EAC2C4008C200CA5397 /* TextFieldWithCounter.swift */,
 				4D736EAE2C4008DF00CA5397 /* MaskedTextField.swift */,
 				4D736EB02C4008FA00CA5397 /* LinkTextField.swift */,
 				4D736EB22C40091500CA5397 /* PasswordTextField.swift */,
@@ -161,8 +161,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				4D736EB12C4008FA00CA5397 /* LinkTextField.swift in Sources */,
-				4D736EAD2C4008C200CA5397 /* CounterTextField.swift in Sources */,
-				4D736EA92C4007BF00CA5397 /* CustomTextField.swift in Sources */,
+				4D736EAD2C4008C200CA5397 /* TextFieldWithCounter.swift in Sources */,
+				4D736EA92C4007BF00CA5397 /* TextFieldWithoutDigits.swift in Sources */,
 				4D736EB52C4010C000CA5397 /* TabBarController.swift in Sources */,
 				4D736E992C40078D00CA5397 /* ViewController.swift in Sources */,
 				4D736E952C40078D00CA5397 /* AppDelegate.swift in Sources */,

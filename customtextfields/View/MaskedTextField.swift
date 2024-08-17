@@ -7,62 +7,67 @@
 
 import UIKit
 
-class MaskedTextField: UITextField, UITextFieldDelegate {
+final class MaskedTextField: UITextField {
+    
     private let inputMask: String
 
     init(inputMask: String) {
         self.inputMask = inputMask
         super.init(frame: .zero)
-        self.delegate = self
+        setup()
     }
 
     required init?(coder: NSCoder) {
-        self.inputMask = "wwwww-ddddd"
-        super.init(coder: coder)
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    private func setup() {
         self.delegate = self
     }
 
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        guard let currentText = textField.text else { return true }
-        let newText = (currentText as NSString).replacingCharacters(in: range, with: string)
-        let maskedText = applyMask(text: newText)
-        textField.text = maskedText
-        return false
-    }
-
-    private func applyMask(text: String) -> String {
-        let allowedCharacters = CharacterSet.letters.union(.decimalDigits)
-        let filteredText = text.filter { char in
-            allowedCharacters.contains(char.unicodeScalars.first!)
-        }
-
-        var formattedText = ""
+    private func applyMask(to text: String) -> String {
+        var maskedText = ""
         var index = 0
+        let filteredText = text.filter { $0.isLetter || $0.isNumber }
+        
         for char in inputMask {
-            if index < filteredText.count {
-                let filteredIndex = filteredText.index(filteredText.startIndex, offsetBy: index)
-                if char == "w" {
-                    if filteredText[filteredIndex].isLetter {
-                        formattedText.append(filteredText[filteredIndex])
-                        index += 1
-                    } else {
-                        break
-                    }
-                } else if char == "d" {
-                    if filteredText[filteredIndex].isNumber {
-                        formattedText.append(filteredText[filteredIndex])
-                        index += 1
-                    } else {
-                        break
-                    }
+            guard index < filteredText.count else { break }
+            let filteredIndex = filteredText.index(filteredText.startIndex, offsetBy: index)
+            let currentChar = filteredText[filteredIndex]
+            
+            switch char {
+            case "w":
+                if currentChar.isLetter {
+                    maskedText.append(currentChar)
+                    index += 1
                 } else {
-                    formattedText.append(char)
+                    return maskedText
                 }
-            } else {
-                formattedText.append(char)
+                
+            case "d":
+                if currentChar.isNumber {
+                    maskedText.append(currentChar)
+                    index += 1
+                } else {
+                    return maskedText
+                }
+                
+            default:
+                maskedText.append(char)
             }
         }
+        
+        return maskedText
+    }
+}
 
-        return formattedText
+extension MaskedTextField: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if let text = textField.text as NSString? {
+            let newText = text.replacingCharacters(in: range, with: string)
+            textField.text = applyMask(to: newText)
+            return false
+        }
+        return true
     }
 }

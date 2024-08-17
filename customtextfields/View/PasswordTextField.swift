@@ -7,52 +7,123 @@
 
 import UIKit
 
-class PasswordTextField: UITextField, UITextFieldDelegate {
-    private let rulesLabel = UILabel()
-    private let minLength = 8
+final class PasswordTextField: UITextField {
+    
+    // MARK: - Properties
+    
+    private let minLength: Int
+    private let requiresDigit: Bool
+    private let requiresLowercase: Bool
+    private let requiresUppercase: Bool
+    
+    private let strengthLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .right
+        return label
+    }()
+    
+    private let requirementsLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .left
+        return label
+    }()
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        self.delegate = self
-        setupRulesLabel()
+    // MARK: - Initializers
+    
+    init(minLength: Int, requiresDigit: Bool, requiresLowercase: Bool, requiresUppercase: Bool) {
+        self.minLength = minLength
+        self.requiresDigit = requiresDigit
+        self.requiresLowercase = requiresLowercase
+        self.requiresUppercase = requiresUppercase
+        super.init(frame: .zero)
+        setup()
     }
 
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    // MARK: - Private Methods
+    
+    private func setup() {
         self.delegate = self
-        setupRulesLabel()
+        setupStrengthLabel()
+        setupRequirementsLabel()
     }
 
-    private func setupRulesLabel() {
-        rulesLabel.translatesAutoresizingMaskIntoConstraints = false
-        rulesLabel.numberOfLines = 0
-        self.addSubview(rulesLabel)
+    private func setupStrengthLabel() {
+        addSubview(strengthLabel)
+        strengthLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            rulesLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            rulesLabel.topAnchor.constraint(equalTo: self.bottomAnchor, constant: 8)
+            strengthLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -8),
+            strengthLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -8)
         ])
-        updateRulesLabel()
+        updateStrengthLabel()
     }
 
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        guard let text = textField.text else { return true }
-        let newString = (text as NSString).replacingCharacters(in: range, with: string)
-        updateRulesLabel(text: newString)
-        return true
+    private func setupRequirementsLabel() {
+        addSubview(requirementsLabel)
+        requirementsLabel.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            requirementsLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 8),
+            requirementsLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -8)
+        ])
+        updateRequirementsLabel()
     }
 
-    private func updateRulesLabel(text: String? = nil) {
-        guard let text = text else { return }
-        var rules = ""
-        rules += text.count >= minLength ? "✓ " : "✗ "
-        rules += "Min \(minLength) characters\n"
-        rules += text.rangeOfCharacter(from: CharacterSet.lowercaseLetters) != nil ? "✓ " : "✗ "
-        rules += "At least one lowercase letter\n"
-        rules += text.rangeOfCharacter(from: CharacterSet.uppercaseLetters) != nil ? "✓ " : "✗ "
-        rules += "At least one uppercase letter\n"
-        rules += text.rangeOfCharacter(from: CharacterSet.decimalDigits) != nil ? "✓ " : "✗ "
-        rules += "At least one digit\n"
-        rulesLabel.text = rules
+    private func updateStrengthLabel() {
+        let strength = evaluatePasswordStrength()
+        strengthLabel.text = strength
+        switch strength {
+        case "Weak":
+            strengthLabel.textColor = .red
+        case "Medium":
+            strengthLabel.textColor = .orange
+        case "Strong":
+            strengthLabel.textColor = .green
+        default:
+            strengthLabel.textColor = .black
+        }
+    }
+
+    private func updateRequirementsLabel() {
+        var requirementsText = ""
+        if requiresDigit {
+            requirementsText += "• Must contain a digit\n"
+        }
+        if requiresLowercase {
+            requirementsText += "• Must contain a lowercase letter\n"
+        }
+        if requiresUppercase {
+            requirementsText += "• Must contain an uppercase letter\n"
+        }
+        requirementsText += "• Minimum length: \(minLength)"
+        requirementsLabel.text = requirementsText
+    }
+
+    private func evaluatePasswordStrength() -> String {
+        guard let password = self.text else { return "Unknown" }
+        var strength = "Weak"
+        let lengthCondition = password.count >= minLength
+        let digitCondition = requiresDigit && password.rangeOfCharacter(from: .decimalDigits) != nil
+        let lowercaseCondition = requiresLowercase && password.rangeOfCharacter(from: .lowercaseLetters) != nil
+        let uppercaseCondition = requiresUppercase && password.rangeOfCharacter(from: .uppercaseLetters) != nil
+        
+        if lengthCondition && digitCondition && lowercaseCondition && uppercaseCondition {
+            strength = "Strong"
+        } else if lengthCondition && (digitCondition || lowercaseCondition || uppercaseCondition) {
+            strength = "Medium"
+        }
+        
+        return strength
     }
 }
 
+extension PasswordTextField: UITextFieldDelegate {
+    // MARK: - UITextFieldDelegate Methods
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        updateStrengthLabel()
+        return true
+    }
+}

@@ -8,42 +8,57 @@
 import UIKit
 import SafariServices
 
-class LinkTextField: UITextField, UITextFieldDelegate {
+protocol LinkTextFieldDelegate: AnyObject {
+    func linkTextField(_ textField: LinkTextField, didDetectValidLink url: URL)
+}
 
+final class LinkTextField: UITextField {
+
+    // MARK: - Properties
+
+    weak var linkDelegate: LinkTextFieldDelegate?
+
+    // MARK: - Initializers
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.delegate = self
-        self.keyboardType = .URL
-        self.autocapitalizationType = .none
-        self.autocorrectionType = .no
+        setup()
     }
 
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        self.delegate = self
-        self.keyboardType = .URL
-        self.autocapitalizationType = .none
-        self.autocorrectionType = .no
+        fatalError("init(coder:) has not been implemented")
     }
 
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        let newText = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) ?? string
-        handleLink(newText)
+    // MARK: - Private Methods
+    
+    private func setup() {
+        self.delegate = self
+    }
+
+    private func detectAndNotifyLink(in text: String) {
+        let pattern = "https?://"
+        let regex = try! NSRegularExpression(pattern: pattern, options: [])
+        let range = NSRange(location: 0, length: text.count)
+        if let _ = regex.firstMatch(in: text, options: [], range: range),
+           let url = URL(string: text) {
+            linkDelegate?.linkTextField(self, didDetectValidLink: url)
+        }
+    }
+}
+
+extension LinkTextField: UITextFieldDelegate {
+    // MARK: - UITextFieldDelegate Methods
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        guard let text = textField.text else { return true }
+        detectAndNotifyLink(in: text)
         return true
     }
 
-    private func handleLink(_ text: String) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            if text.starts(with: "http"), let url = URL(string: text) {
-                self.openLink(url)
-            }
-        }
-    }
-
-    private func openLink(_ url: URL) {
-        let safariVC = SFSafariViewController(url: url)
-        if let rootVC = UIApplication.shared.currentWindow?.rootViewController {
-            rootVC.present(safariVC, animated: true, completion: nil)
-        }
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        guard let text = textField.text else { return true }
+        let newString = (text as NSString).replacingCharacters(in: range, with: string)
+        detectAndNotifyLink(in: newString)
+        return true
     }
 }
